@@ -2,17 +2,17 @@
 {% block title %}Register - Smart Study Quiz App{% endblock %}
 {% block heading %}Register{% endblock %}
 {% block content %}
-    <p> Enter your details to register </p>
+    <!-- <p> Enter your details to register </p> -->
     <form method="POST" action="{{ url_for('register') }}">
-        <p>username
+        <p>Username
         <input type="text" name="username" placeholder="Username" required></p>
-        <p>display name
+        <p>Display Name
         <input type="text" name="displayName" placeholder="Display Name" required></p>
-        <p>email
+        <p>Email
         <input type="email" name="email" placeholder="Email" required></p>
-        <p>password
+        <p>Password
         <input type="password" name="password" placeholder="Password" required></p>
-        <p>confirm password
+        <p>Confirm Password
         <input type="password" name="confirmPassword" placeholder="Confirm Password" required></p>
         <button type="submit">Register</button>
     </form>

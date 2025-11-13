@@ -44,9 +44,11 @@ form {
     color: red;
     text-align: center;
     margin-bottom:10 px;
+    bottom: 0;
 }
 .success {
     color: green;
     text-align: center;
     margin-bottom: 10 px;
+    bottom: 0;
 }
