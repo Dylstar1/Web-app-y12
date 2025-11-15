@@ -11,12 +11,15 @@
         <h1>{% block heading %}Smart Study Quiz App{% endblock %}</h1>
     </header>
     <navbar>
+        {% if not current_user.is_authenticated %}
         <a href="{{ url_for('register') }}">Register</a>
         <a href="{{ url_for('login') }}">Login</a>
+        {% else %}
         <a href="{{ url_for('dashboard') }}">Dashboard</a>
         <a href="{{ url_for('addprogress') }}">Add Progress</a>
         <a href="{{ url_for('logs') }}">Logs</a>
-
+        <a href="{{ url_for('logoff') }}">Log out</a>
+        {% endif %}
     </navbar>
     <content>
 

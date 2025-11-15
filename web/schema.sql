@@ -15,6 +15,6 @@ CREATE TABLE IF NOT EXISTS progresslogs (
     title TEXT NOT NULL UNIQUE,
     details TEXT NOT NULL,
     image_path TEXT
-);
+)
 
---- sqlite3 database.db ".read schema.sql"
+--- sqlite3 database.db .read schema.sql
