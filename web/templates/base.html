@@ -15,9 +15,17 @@
         <a href="{{ url_for('register') }}">Register</a>
         <a href="{{ url_for('login') }}">Login</a>
         {% else %}
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('addprogress') }}">Add Progress</a>
-        <a href="{{ url_for('logs') }}">Logs</a>
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Pages</a>
+            <div class="dropdown-content">
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('sdlc') }}">SDLC</a>
+                <a href="{{ url_for('addprogress') }}">Add Progress</a>
+                <a href="{{ url_for('logs') }}">Logs</a>
+                <a href="{{ url_for('quizz') }}">Quizz</a>
+                <!-- <a href="{{ url_for('results') }}">Results</a> -->
+            </div>
+        </div>
         <a href="{{ url_for('logoff') }}">Log out</a>
         {% endif %}
     </navbar>

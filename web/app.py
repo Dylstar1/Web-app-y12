@@ -3,9 +3,16 @@ import sqlite3
 from datetime import date # for default date
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, LoginManager, UserMixin, current_user, login_user, logout_user
+import json
+
+from quiz_data import questions
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret-key'  # For sessions and flash messages
+app.config['SECRET_KEY'] = 'secret-key'
+
+# FIX 1: Register chr and ord as Jinja filters (Fixes 'No filter named chr' for A, B, C, D)
+app.jinja_env.filters['chr'] = chr
+app.jinja_env.filters['ord'] = ord
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -29,15 +36,13 @@ def load_user(user_id):
         return User(id=user['id'], username = user['username'])
     return None
 
-# Database connection function
 def get_db_connection():
     conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row  # Allows accessing columns by name
+    conn.row_factory = sqlite3.Row
     return conn
 
 @app.route('/')
 def index():
-    # return 'Index page'
     return render_template('login.html')
 
 @app.route('/addprogress', methods = ['GET', 'POST'])
@@ -51,21 +56,24 @@ def addprogress():
         date = request.form['date']
         title = request.form['title']
         details = request.form['details']
+        challenges = request.form['challenges']
+        solutions = request.form['solutions']
 
         conn = get_db_connection()
         cursor = conn.cursor()
 
         try:
             cursor.execute(
-                "INSERT INTO progresslogs (user_id, date, title, details) VALUES (?, ?, ?, ?)", (current_user.id, date, title, details))
+                "INSERT INTO progresslogs (user_id, date, title, details, challenges, solutions) VALUES (?, ?, ?, ?, ?, ?)", 
+                (current_user.id, date, title, details, challenges, solutions)
+            )
             conn.commit()
-            flash('Log succesful!', ' success')
+            flash('Log successful!', 'success')
             conn.close()
-            # give feedback to user 
-            # redirect to dashboard -- later ti view logs instead
+            return redirect(url_for('logs')) # Redirect to logs
         except sqlite3.IntegrityError:
             conn.close()
-            flash('Please enter a complere log.', 'error')
+            flash('Please enter a complete log, or change the title (it must be unique).', 'error')
             return redirect(url_for('addprogress'))
         except Exception as e:
             conn.close()
@@ -80,7 +88,7 @@ def dashboard():
     '''if 'user_id' not in session:
         flash('You need to be logged in to view this content.', 'error')
         return redirect(url_for('login'))'''
-                        
+    
     return render_template('dashboard.html', username=current_user.username)
 
 @app.route('/logs', methods = ['GET', 'POST'])
@@ -95,7 +103,7 @@ def logs():
 
     # convert SQL below to make secure
     # create table join with users so it also displays the users display name on the screen - html too
-    cursor.execute("SELECT date, title, details FROM progresslogs WHERE user_id = ? ORDER BY date ASC", (current_user.id,))
+    cursor.execute("SELECT date, title, details, challenges, solutions FROM progresslogs WHERE user_id = ? ORDER BY date ASC", (current_user.id,))
     posts = cursor.fetchall()
     conn.close()
     # display no posts if user has none
@@ -114,17 +122,14 @@ def login():
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # cursor.execute("SELECT id, username, password FROM users WHERE username = ? AND password = ?", (username, generate_password_hash(password)))
         cursor.execute("SELECT id, username, password FROM users WHERE username = ?", (username,))
-        # "INSERT INTO users (username, password, email, display_name) VALUES (?, ?, ?, ?)", (username, generate_password_hash(password), email, displayName)
-
         user = cursor.fetchone()
         conn.close()
 
         if user:
-            if check_password_hash(user['password'], password):
+            if check_password_hash(user['passward'], password): 
                 login_user(User(id=user['id'], username=user['username']))
-                session['user_id'] = user['id']
+                session['user_id'] = user['id'] 
                 flash('Login successful', 'success')
                 return redirect(url_for('dashboard'))
             else:
@@ -139,10 +144,6 @@ def login():
 @app.route('/logoff')
 @login_required
 def logoff():
-    '''if 'user_id' not in session:
-        flash('You need to be logged in to view this content.', 'error')
-        return redirect(url_for('login'))
-    else:'''
     logout_user()
     session.pop('user_id', None)
     flash('Log out successful', 'success')
@@ -159,27 +160,29 @@ def register():
         password = request.form['password']
         confirmPassword = request.form['confirmPassword']
 
-         # Insecure: Plain-text password comparison
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # Using parameterized query to avoid SQL injection, but password is still plain-text
-        # exists = cursor.execute(f"SELECT COUNT(username) FROM Users WHERE username = '{username}'")
         if password != confirmPassword:
             flash('passwords do not match', 'error') 
             return redirect(url_for('register'))
         
+        hashed_password = generate_password_hash(password)
+        
         try:
             cursor.execute(
-                 "INSERT INTO users (username, password, email, display_name) VALUES (?, ?, ?, ?)", (username, generate_password_hash(password), email, displayName)
+                 "INSERT INTO users (username, password, email, display_name) VALUES (?, ?, ?, ?)", 
+                 (username, hashed_password, email, displayName)
             )
             conn.commit()
-            cursor.execute('SELECT id, username FROM users WHERE username = ?', (username))
-            user=cursor.fetchone
+            
+            cursor.execute('SELECT id, username FROM users WHERE username = ?', (username,))
+            user=cursor.fetchone()
             login_user(User(id=user['id'], username=user['username']))
-            flash('Registation succesful! please log in.', ' success')
+            
+            flash('Registration successful! You are now logged in.', 'success')
             conn.close()
-            return redirect(url_for('login'))
+            return redirect(url_for('dashboard'))
         except sqlite3.IntegrityError:
             conn.close()
             flash('Username or email already exists', 'error')
@@ -190,6 +193,85 @@ def register():
             return redirect(url_for('register'))
         
     return render_template('register.html')
+
+@app.route('/sdlc')
+@login_required
+def sdlc():
+    '''if 'user_id' not in session:
+        flash('You need to be logged in to view this content.', 'error')
+        return redirect(url_for('login'))'''
+    
+    return render_template('sdlc.html', username=current_user.username)
+
+@app.route('/quizz', methods=['GET', 'POST'])
+@login_required
+def quizz():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM quizzes ORDER BY id ASC")
+    questions = cursor.fetchall()
+    conn.close()
+
+    if 'question_id' not in session or 'score' not in session:
+        session['question_id'] = 0
+        session['score'] = 0
+    
+    total_q = len(questions)
+    
+    if request.method == 'POST':
+        user_answer = request.form.get('answer')
+        
+        current_question_index = session['question_id']
+        current_question = questions[current_question_index]
+        
+        if user_answer and int(user_answer) == current_question['correct_answer']:
+            session['score'] += 1
+        
+        session['question_id'] += 1
+
+        if session['question_id'] >= total_q:
+            return redirect(url_for('results'))
+        else:
+            return redirect(url_for('quizz')) 
+    else: 
+        if session['question_id'] >= total_q: 
+            return redirect(url_for('results'))
+        
+        current_question_index = session['question_id']
+        current_question = questions[current_question_index]
+    
+        
+        return render_template('quizz.html', question=current_question, current_number=current_question_index + 1, total_q=total_q)
+
+@app.route('/results')
+@login_required
+def results():
+    f_score = session.get('score', 0)
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM quizzes")
+    total_questions = cursor.fetchone()[0]
+
+    cursor.execute(
+        "INSERT INTO score (user_id, score, total_questions, attempt_date) VALUES (?, ?, ?, DATE('now'))",
+        (current_user.id, f_score, total_questions)
+    )
+    conn.commit()
+    
+    cursor.execute("SELECT id, score, total_questions, attempt_date FROM score WHERE user_id = ? ORDER BY id DESC",(current_user.id,)
+    )
+
+    cursor.execute("SELECT MAX(score) FROM score")
+    highest_number = cursor.fetchone()[0]
+
+    results = cursor.fetchall()
+    conn.close()
+    session['question_id'] = 0
+    session['score'] = 0
+
+    return render_template('results.html', score=f_score, total=total_questions, results=results, highest_number=highest_number)
 
 if __name__ == '__main__':
     app.run(debug=True)

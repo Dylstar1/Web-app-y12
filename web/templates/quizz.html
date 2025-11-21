@@ -1,0 +1,22 @@
+{% extends 'base.html' %}   
+{% block title %}Quizz - Smart Study Quiz App{% endblock %}
+{% block heading %}Quizz{% endblock %}
+{% block content %}
+    <form method="POST" action="{{ url_for('quizz') }}">
+        <h3>Question {{ current_number }} of {{ total_q }}</h3>
+        <p>{{ question.question }}</p>
+            {% for i in range(4) %}
+                {% set option_key = 'option_' ~ i %}
+                <div>
+                    <input type="radio" name="answer" value="{{ i }}" id="option{{ i }}" required>
+                    <label for="option{{ i }}">
+                        <span>{{ ('A'|ord + i)|chr }}.</span>
+                        {{ question[option_key] }}
+                    </label>
+                </div>
+            {% endfor %}
+            <br>
+            <button type="submit">Next</button>
+    </form>
+
+{% endblock %}

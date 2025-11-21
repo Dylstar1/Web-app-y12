@@ -1,0 +1,16 @@
+{% extends 'base.html' %}   
+{% block title %}Quiz Results - Smart Study Quiz App{% endblock %}
+{% block heading %}Quiz Results{% endblock %}
+{% block content %}
+    <form method="GET" action="{{ url_for('quizz') }}">
+    <div>
+        <h2>Quiz Complete</h2>
+        
+        <h3>Score:</h3>
+        <p>{{ score }} / {{ total }}</p>
+        <button type="submit">Retry</button>
+        <p>Best: {{ highest_number}}</p>
+    </div>
+    </form>
+
+{% endblock %}

@@ -8,12 +8,16 @@
                 <th>Date</th>
                 <th>Title</th>
                 <th>Details</th>
+                <th>Challenges</th>
+                <th>Solutions</th>
             </tr>
         {% for post in posts %}
             <tr> 
                 <td>{{ post.date }}</td>
                 <td>{{ post.title }}</td>
                 <td>{{ post.details }}</td>
+                <td>{{ post.challenges }}</td>
+                <td>{{ post.solutions }}</td>
             </tr>
         {% endfor%}
         </table>
