@@ -223,9 +223,15 @@ def quizz():
         
         current_question_index = session['question_id']
         current_question = questions[current_question_index]
-        
+        correct_index = current_question['correct_answer']
+        correct = chr(ord('A') + correct_index)
+
+        if user_answer and int(user_answer) != current_question['correct_answer']:
+            flash(f'Incorrect. The correct answer is {correct}', 'error')
+
         if user_answer and int(user_answer) == current_question['correct_answer']:
             session['score'] += 1
+            flash('Correct', 'success')
         
         session['question_id'] += 1
 
@@ -270,7 +276,7 @@ def results():
     conn.close()
     session['question_id'] = 0
     session['score'] = 0
-
+    
     return render_template('results.html', score=f_score, total=total_questions, results=results, highest_number=highest_number)
 
 if __name__ == '__main__':

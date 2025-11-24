@@ -1,13 +1,28 @@
 {% extends 'base.html' %}   
-{% block title %}Dashboard - Smart Study Quiz App{% endblock %}
-{% block heading %}Dashboard{% endblock %}
+{% block title %}SDLC - Smart Study Quiz App{% endblock %}
+{% block heading %}SDLC{% endblock %}
 {% block content %}
-    <h3 class="sdlc">
-        1. Requirements definition
-        2. determining specifications
-        3. design
-        4. development
-        5. integration
-        6. testing/debugging.
-    </h3>
+        <table>
+            <tr> 
+                <th>Requirements definition</th>
+                <th>determining specifications</th>
+                <th>design</th>
+                <th>development</th>
+                <th>testing/debugging</th>
+            </tr>
+            <tr> 
+                <td><h4>Objective:</h4><br> Create a study app with that helps students study and complete quizzes.<br>
+                    <h4>Fuctional:</h4><br>- User authentication<br>- Database Setup<br>- Progress Logging<br>- Quiz<br>- SDLC Documentation<br>
+                    <h4>Non fuctional:</h4> <br>- Responsive App<br> - Flask + Jinga used<br>- Insecure and secure app<br>- Version controlled with git<br>- Handle errors                    
+                    <br> <h4>Constraints</h4><br>- Only use Flask, sqlite3, Built in Python libaries<br>- Only 1 subject for quizzes<br>- No PWA Features
+                </td>
+                <td><h4>Objective:</h4><br>Allow user login and authentication, save data in a database, log progress and a basic quiz
+                    <br>The app will be responsive, use flask and jinga, Demonstrate insecure vs. secure practices, version controled code with git, handle basic errors
+                    <br>The App
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
 {% endblock %}

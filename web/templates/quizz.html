@@ -16,6 +16,9 @@
                 </div>
             {% endfor %}
             <br>
+            {% if current_number > 1 %}
+                <button type="submit" name="action" value="previous">Previous</button>
+            {% endif %}
             <button type="submit">Next</button>
     </form>
 

@@ -93,6 +93,12 @@ navbar a:hover {
 h1 { 
     text-align: center; 
 }
+
+h4 {
+    margin-bottom: -15px;
+    margin-top: 10px;
+}
+
 .dash {
     margin: 5px;
     padding: 5px;
