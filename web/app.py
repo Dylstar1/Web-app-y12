@@ -207,16 +207,20 @@ def flashcards():
     cursor.execute("SELECT * FROM quizzes ORDER BY ID ASC")
     card = cursor.fetchall()
     conn.close()
-    
-    cards = len(questions)
 
-    if 'question_id' not in session:
-        session['question_id'] = 0
-        
+    # Reset quiz state when entering flashcards
+    session.pop('question_id', None)
+    session.pop('score', None)
+
+    cards = len(card) # Total number of cards
+
+    if 'card_id' not in session:
+        session['card_id'] = 0
+
     if 'flipside' not in session:
         session['flipside'] = False
         
-    current_index = session['question_id']
+    current_index = session['card_id']
 
     if request.method == 'POST':
         action = request.form.get('action')
@@ -227,26 +231,26 @@ def flashcards():
         elif action == 'next':
             session['flipside'] = False
             if current_index < cards - 1:
-                session['question_id'] += 1
+                session['card_id'] += 1
                 
         elif action == 'previous':
             session['flipside'] = False 
             if current_index > 0:
-                session['question_id'] -= 1
+                session['card_id'] -= 1
         
         return redirect(url_for('flashcards'))
     
     if current_index >= cards:
         current_index = 0
-        session['question_id'] = 0
+        session['card_id'] = 0
         
     if cards > 0:
         current_card = card[current_index]
         current_number = current_index + 1
         flipside = session['flipside'] 
-         
-        return render_template('flashcards.html', question=current_card, current_number=current_number, cards=cards,flipside=flipside) 
-    
+
+    return render_template('flashcards.html', question=current_card, current_number=current_number, cards=cards, flipside=flipside)
+   
 @app.route('/quizz', methods=['GET', 'POST'])
 @login_required
 def quizz():
@@ -256,19 +260,24 @@ def quizz():
     questions = cursor.fetchall()
     conn.close()
 
+    session.pop('flashcard_id', None)
+
     if 'question_id' not in session or 'score' not in session:
         session['question_id'] = 0
         session['score'] = 0
     
-    question = len(questions)
+    elif 'question_id' not in session:
+        session['question_id'] = 0
+
+    total_q = len(questions)
     
     if request.method == 'POST':
         user_answer = request.form.get('answer')
         
-        current_index = session['question_id']
-        current_question = questions[current_index]
-        correct_index = current_question['correct_answer']
-        correct = chr(ord('A') + correct_index)
+        current = session['question_id']
+        current_question = questions[current]
+        correct_answer = current_question['correct_answer']
+        correct = chr(ord('A') + correct_answer)
 
         if user_answer and int(user_answer) != current_question['correct_answer']:
             flash(f'Incorrect. The correct answer is {correct}', 'error')
@@ -279,18 +288,18 @@ def quizz():
         
         session['question_id'] += 1
 
-        if session['question_id'] >= question:
+        if session['question_id'] >= total_q:
             return redirect(url_for('results'))
         else:
             return redirect(url_for('quizz')) 
     else: 
-        if session['question_id'] >= question: 
+        if session['question_id'] >= total_q: 
             return redirect(url_for('results'))
         
-        current_index = session['question_id']
-        current_question = questions[current_index]
+        current = session['question_id']
+        current_question = questions[current]
 
-        return render_template('quiz.html', current_question=current_index + 1, question=question)
+        return render_template('quizz.html', question=current_question, current_number=current + 1, total_q=total_q)
     
 @app.route('/results')
 @login_required

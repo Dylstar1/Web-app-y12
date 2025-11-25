@@ -3,7 +3,9 @@
 {% block heading %}Flash Cards{% endblock %}
 {% block content %}
 <form method="POST" action="{{ url_for('flashcards') }}">
+    
     <h3>Card {{ current_number }} of {{ cards }}</h3>
+    
     <div>
         <div>
             <p>{{ question.question }}</p>
@@ -11,21 +13,54 @@
         {% if flipside %}
         <hr>
         <h4>Answer:</h4><br>
-        <p>{{ question['option_0'] }}</p>
+        {% if current_number == 1 %}
+            <p>To develop reliable and maintainable software systems</p>
+        {% endif %}
+        {% if current_number == 2 %}
+            <p>Waterfall</p>
+        {% endif %}
+        {% if current_number == 3 %}
+            <p>Save changes to the repository</p>
+        {% endif %}
+        {% if current_number == 4 %}
+            <p>Routing testing</p>
+        {% endif %}
+        {% if current_number == 5 %}
+            <p>To document and visualise system structure and behaviour</p>
+        {% endif %}
+        {% if current_number == 6 %}
+            <p>Don't Repeat Yourself</p>
+        {% endif %}
+        {% if current_number == 7 %}
+            <p>Hiding internal details and exposing only needed functionality</p>
+        {% endif %}
+        {% if current_number == 8 %}
+            <p>POST</p>
+        {% endif %}
+        {% if current_number == 9 %}
+            <p>Communication between different software components</p>
+        {% endif %}
+        {% if current_number == 10 %}
+            <p>Reliable and maintainable</p>
+        {% endif %}
         {% endif %}
     </div>
     
-    {% if not flipside %}
-        <button type="submit" name="action" value="flip">Flip Card</button>
-    {% else %}
-        
-        {% if current_number > 1 %}
-            <button type="submit" name="action" value="previous">Previous</button>
+    <div>
+        {% if not flipside %}
+            <button type="submit" name="action" value="flip">Flip Card</button>
+        {% else %}
+            
+            {% if current_number > 1 %}
+                <button type="submit" name="action" value="previous">Previous</button>
+            {% endif %}
+            
+            {% if current_number == total_q %}
+                <a class="toquizz" href="{{ url_for('quizz') }}">Go to Quizz</a>
+            {% else %}
+                <button type="submit" name="action" value="next">Next</button>
+            {% endif %}
         {% endif %}
-        <button type="submit" name="action" value="next">Next</button>
-        {% if current_number == cards %}
-            <a class="toquizz" href="{{ url_for('quizz') }}">Go to Quizz</a>
-        {% endif %}
-    {% endif %}
+    </div>
 </form>
 {% endblock %}
