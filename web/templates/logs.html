@@ -2,8 +2,10 @@
 {% block title %}Logs - Smart Study Quiz App{% endblock %}
 {% block heading %}Progress Logs{% endblock %}
 {% block content %}
+<form class="table">
     {% if posts %}
         <table>
+            <!-- Table for Logs -->
             <tr> 
                 <th>Date</th>
                 <th>Title</th>
@@ -20,9 +22,11 @@
                 <td>{{ post.solutions }}</td>
             </tr>
         {% endfor%}
+        
         </table>
-    {% else %}
-    <p>No progress entries found.</p>
+        <!-- buttons to redirect to add progress and edit logs-->
+        <p class="progress"><a href="{{ url_for('addprogress') }}">Add Progress</a>
+        <a href="{{ url_for('edit_log') }}">Edit Logs</a></p>
     {%endif%}
-
+</form>
 {% endblock %}

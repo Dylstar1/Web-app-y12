@@ -3,7 +3,7 @@
 {% block heading %}Flash Cards{% endblock %}
 {% block content %}
 <form method="POST" action="{{ url_for('flashcards') }}">
-    
+    <!-- Card number-->
     <h3>Card {{ current_number }} of {{ cards }}</h3>
     
     <div>
@@ -12,6 +12,7 @@
         </div>
         {% if flipside %}
         <hr>
+        <!-- Display flashcard content for each card -->
         {% if current_number == 1 %}
             <p>To develop reliable and maintainable software systems</p>
         {% endif %}
@@ -44,16 +45,17 @@
         {% endif %}
         {% endif %}
     </div>
-    
+        <!-- button to flip card side if not already flipped -->
         {% if not flipside %}
         <button type="submit" name="action" value="flip">Flip Card</button>
     {% else %}
-        
+        <!-- if card is flipped display the previous and next card buttons -->
         {% if current_number > 1 %}
             <button type="submit" name="action" value="previous">Previous</button>
         {% endif %}
         <button type="submit" name="action" value="next">Next</button>
         {% if current_number == cards %}
+            <!-- if card = final card display quiz button to redirect to quiz -->
             <a class="toquizz" href="{{ url_for('quizz') }}">Go to Quizz</a>
         {% endif %}
     {% endif %}

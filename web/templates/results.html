@@ -5,59 +5,15 @@
     <form method="GET" action="{{ url_for('quizz') }}">
     <div>
         <h2>Quiz Complete</h2>
-        
+        <!-- The score of most recent quiz -->
         <h3>Score:</h3>
         <p>{{ score }} / {{ total }}</p>
         <button type="submit">Retry</button>
+        <!-- revise button if score is less than 50% -->
         {% if score / total < 0.5 %}
             <a class="revise" href="{{ url_for('flashcards') }}">Revise Notes</a>
         {% endif %}
+        <!-- Display top result in the current session -->
         <p>Best: {{ highest_number}}</p>
     </div>
-    <!--<table>
-        <tr> 
-            <th>Question</th>
-            <th>Answer</th>
-        </tr>
-        <tr> 
-            <td>1</td>
-            <td>B</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>B</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>B</td>
-        </tr>
-        <tr>
-            <td>4</td>
-            <td>D</td> 
-        </tr>
-        <tr>
-            <td>5</td>
-            <td>B</td>
-        </tr>
-        <tr>
-            <td>6</td>
-            <td>C</td>
-        </tr>
-        <tr>
-            <td>7</td>
-            <td>A</td>
-        </tr>
-        <tr>
-            <td>8</td>
-            <td>B</td>
-        </tr>
-        <tr>
-            <td>9</td>
-            <td>B</td>
-        </tr>
-        <tr>
-            <td>10</td>
-            <td>C</td>
-        </tr>
-    </table>-->
 {% endblock %}

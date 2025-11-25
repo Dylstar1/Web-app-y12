@@ -3,11 +3,13 @@
 {% block heading %}SDLC{% endblock %}
 {% block content %}
         <table>
+            <!-- SDLC table-->
             <tr> 
                 <th>Requirements definition</th>
                 <th>determining specifications</th>
                 <th>design</th>
                 <th>development</th>
+                <th>Intergration</th>
                 <th>testing/debugging</th>
             </tr>
             <tr> 
@@ -24,15 +26,42 @@
                 </td>
                 <td>
                     <br><h4>Diagram</h4>
-                    <br><h4>Waterfall Justification</h4>
-                    <br>Requirements for the project are clear and unlikely to change, so a linear method works well. 
-                    <br>Each phase creates strong documentation, which helps keep the project organised. 
-                    <br>The structured order makes it easy to track progress and prevents skipping ahead. 
-                    <br>Reduces mistakes during development because all planning is completed first.
+                    <br><h4>Sstem Archieture</h4>
+                    <br>Frontend: HTML, CSS, Jina templates
+                    <br>Backend: Flask routing, Python logic, Werkzeug hashing
+                    <br>Database: SQLite Database, raw sqlite3
+                    <br><h4>Database</h4>
+                    <br>Users: Store id, username, password, email
+                    <br>Progress_logs: Stores id, user_id, date, title, details, image_path, challenges, solutions
+                    <br>Quiz: Stores id, question, options_0-3, correct_answer
+                    <br>Scores: Stores, id, user_id, score, total_questions
+                    <br><h4>Waterfall Justifcation</h4>
+                    <br>Requirements Stability: Functional Requirements: user authentication, progress logs, quiz. Non Functional: security, fask and SQLite. These are fixed and defined aspects of the project 
+                    <br>Documentation: Doucments of SDLC phases. Requies completion and review of each phases.
+                    <br>Security: changes from insecure plain text to secure hashing and parameterised queries.
                 </td>
                 <td><a href="{{ url_for('logs') }}">Progress Logs</a><br>
                 </td>
-                <td></td>
+                <td><h4>Core Intergration</h4>
+                <br>Module: Connected Frontend Jinga to Flask backedn routes, allows user to naviate login pages to dashboard
+                <br>Database: Ensure Flask routes open and clse SQLite database connection
+                <br>Session: Intergrate Flask Sessions across all routes, ensures user_id is available for displaying user logs
+                <br><h4>Security Intergration</h4>
+                <br>Insecure and Secure app, through plain text password and secure hashing
+                <br>Paramertized Queries: SQL queries intergated safely
+                </td>
+                <td><h4>Functional</h4>
+                <br>Tests for Register/Login Progress logs, Flashcards, quiz and Logout
+                <br><h4>Non Functional</h4>
+                <br>Insecure and Secure tests, SQL and database tests, password and hashing
+                <br><h4>Tests</h4>
+                <br>Unit Tests: Testing Werkzeru hashing, Ensure Insert into users function handles Constraints
+                <br>Intergation Tests: Tests the register route connects to the database and stores user recods and login rout which retrieves the verifcation function, Tests Progress logs and passing data to SQL insert, displaying the data
+                <br>System Tests: Testing system is secure for all pages
+                <br>Requirements: Testing Quiz, User logs, Responsivemness
+                <br>Error Handling: Tests system handles errors, invalid login, unique constraints, using Flask flash messages
+                </td>
+
             </tr>
         </table>
 {% endblock %}

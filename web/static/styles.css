@@ -140,7 +140,22 @@ h4 {
 .revise:hover {
     background-color: #004080; 
     text-decoration: none;
-    text-underline-offset: 0;}
+    text-underline-offset: 0;
+}
+
+.table {
+    max-width: 1000px;
+    margin: 15px auto;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0, 0.1);
+    align-content: center;
+}
+
+.progress {
+    text-align: center;
+    border: #0a0a0a;
+}
 
 form {
     max-width: 500px;
