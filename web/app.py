@@ -10,7 +10,6 @@ from quiz_data import questions
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret-key'
 
-# FIX 1: Register chr and ord as Jinja filters (Fixes 'No filter named chr' for A, B, C, D)
 app.jinja_env.filters['chr'] = chr
 app.jinja_env.filters['ord'] = ord
 
@@ -123,7 +122,7 @@ def login():
         conn.close()
 
         if user:
-            if check_password_hash(user['passward'], password): 
+            if check_password_hash(user['password'], password): 
                 login_user(User(id=user['id'], username=user['username']))
                 session['user_id'] = user['id'] 
                 flash('Login successful', 'success')
@@ -134,7 +133,7 @@ def login():
         else:
             flash('Invalid username or password', 'error')
             return redirect(url_for('login'))
-
+        
     return render_template('login.html')
 
 @app.route('/logoff')
