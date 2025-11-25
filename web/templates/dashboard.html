@@ -3,4 +3,12 @@
 {% block heading %}Dashboard{% endblock %}
 {% block content %}
     <h2 class="dash">Welcome to the Smart Study Quiz App!</h2>
+    <h4>Choose subject:</h4><br>
+    <div class="dropdown">
+        <a href="#" class="dropbtn">Software Enginering</a>
+        <div class="dropdown-content">
+            <a href="{{ url_for('flashcards') }}">Software Flashcards</a>
+            <a href="{{ url_for('quizz') }}">Software Quizz</a>
+        </div>
+    </div>
 {% endblock %}

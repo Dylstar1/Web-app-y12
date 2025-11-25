@@ -46,21 +46,17 @@
         {% endif %}
     </div>
     
-    <div>
         {% if not flipside %}
-            <button type="submit" name="action" value="flip">Flip Card</button>
-        {% else %}
-            
-            {% if current_number > 1 %}
-                <button type="submit" name="action" value="previous">Previous</button>
-            {% endif %}
-            
-            {% if current_number == total_q %}
-                <a class="toquizz" href="{{ url_for('quizz') }}">Go to Quizz</a>
-            {% else %}
-                <button type="submit" name="action" value="next">Next</button>
-            {% endif %}
+        <button type="submit" name="action" value="flip">Flip Card</button>
+    {% else %}
+        
+        {% if current_number > 1 %}
+            <button type="submit" name="action" value="previous">Previous</button>
         {% endif %}
-    </div>
+        <button type="submit" name="action" value="next">Next</button>
+        {% if current_number == cards %}
+            <a class="toquizz" href="{{ url_for('quizz') }}">Go to Quizz</a>
+        {% endif %}
+    {% endif %}
 </form>
 {% endblock %}
