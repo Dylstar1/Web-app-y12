@@ -109,6 +109,17 @@ h4 {
     padding: 5px;
 }
 
+.toquizz {
+    background-color: #0256c3;
+    color: rgb(255, 255, 255); 
+    padding: 2px 2px; 
+    margin-left: 290px;
+    border: 1px; 
+    border-radius: 3px;
+    border-color: #0a0a0a;
+    text-decoration: none;
+}
+
 form {
     max-width: 500px;
     margin: 15px auto;

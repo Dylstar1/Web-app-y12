@@ -101,13 +101,9 @@ def logs():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # convert SQL below to make secure
-    # create table join with users so it also displays the users display name on the screen - html too
     cursor.execute("SELECT date, title, details, challenges, solutions FROM progresslogs WHERE user_id = ? ORDER BY date ASC", (current_user.id,))
     posts = cursor.fetchall()
     conn.close()
-    # display no posts if user has none
-    # display all post is user has dynamic - for
     
     return render_template('logs.html', posts = posts, username=current_user.username)
 
@@ -203,6 +199,54 @@ def sdlc():
     
     return render_template('sdlc.html', username=current_user.username)
 
+@app.route('/flashcards', methods=['GET', 'POST'])
+@login_required
+def flashcards():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM quizzes ORDER BY ID ASC")
+    card = cursor.fetchall()
+    conn.close()
+    
+    cards = len(questions)
+
+    if 'question_id' not in session:
+        session['question_id'] = 0
+        
+    if 'flipside' not in session:
+        session['flipside'] = False
+        
+    current_index = session['question_id']
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+        
+        if action == 'flip':
+            session['flipside'] = not session['flipside'] 
+        
+        elif action == 'next':
+            session['flipside'] = False
+            if current_index < cards - 1:
+                session['question_id'] += 1
+                
+        elif action == 'previous':
+            session['flipside'] = False 
+            if current_index > 0:
+                session['question_id'] -= 1
+        
+        return redirect(url_for('flashcards'))
+    
+    if current_index >= cards:
+        current_index = 0
+        session['question_id'] = 0
+        
+    if cards > 0:
+        current_card = card[current_index]
+        current_number = current_index + 1
+        flipside = session['flipside'] 
+         
+        return render_template('flashcards.html', question=current_card, current_number=current_number, cards=cards,flipside=flipside) 
+    
 @app.route('/quizz', methods=['GET', 'POST'])
 @login_required
 def quizz():
@@ -216,13 +260,13 @@ def quizz():
         session['question_id'] = 0
         session['score'] = 0
     
-    total_q = len(questions)
+    question = len(questions)
     
     if request.method == 'POST':
         user_answer = request.form.get('answer')
         
-        current_question_index = session['question_id']
-        current_question = questions[current_question_index]
+        current_index = session['question_id']
+        current_question = questions[current_index]
         correct_index = current_question['correct_answer']
         correct = chr(ord('A') + correct_index)
 
@@ -235,20 +279,19 @@ def quizz():
         
         session['question_id'] += 1
 
-        if session['question_id'] >= total_q:
+        if session['question_id'] >= question:
             return redirect(url_for('results'))
         else:
             return redirect(url_for('quizz')) 
     else: 
-        if session['question_id'] >= total_q: 
+        if session['question_id'] >= question: 
             return redirect(url_for('results'))
         
-        current_question_index = session['question_id']
-        current_question = questions[current_question_index]
-    
-        
-        return render_template('quizz.html', question=current_question, current_number=current_question_index + 1, total_q=total_q)
+        current_index = session['question_id']
+        current_question = questions[current_index]
 
+        return render_template('quiz.html', current_question=current_index + 1, question=question)
+    
 @app.route('/results')
 @login_required
 def results():

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Flash Cards - Smart Study Quiz App{% endblock %}
+{% block heading %}Flash Cards{% endblock %}
+{% block content %}
+<form method="POST" action="{{ url_for('flashcards') }}">
+    <h3>Card {{ current_number }} of {{ cards }}</h3>
+    <div>
+        <div>
+            <p>{{ question.question }}</p>
+        </div>
+        {% if flipside %}
+        <hr>
+        <h4>Answer:</h4><br>
+        <p>{{ question['option_0'] }}</p>
+        {% endif %}
+    </div>
+    
+    {% if not flipside %}
+        <button type="submit" name="action" value="flip">Flip Card</button>
+    {% else %}
+        
+        {% if current_number > 1 %}
+            <button type="submit" name="action" value="previous">Previous</button>
+        {% endif %}
+        <button type="submit" name="action" value="next">Next</button>
+        {% if current_number == cards %}
+            <a class="toquizz" href="{{ url_for('quizz') }}">Go to Quizz</a>
+        {% endif %}
+    {% endif %}
+</form>
+{% endblock %}
