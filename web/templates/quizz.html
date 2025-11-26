@@ -4,6 +4,7 @@
 {% block content %}
     <form method="POST" action="{{ url_for('quizz') }}">
         <!-- Question number -->
+        <h3>Software Quiz</h3>
         <h3>Question {{ current_number }} of {{ total_q }}</h3>
         <p>{{ question.question }}</p>
             {% for i in range(4) %}

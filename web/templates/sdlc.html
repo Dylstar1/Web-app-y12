@@ -26,6 +26,7 @@
                 </td>
                 <td>
                     <br><h4>Diagram</h4>
+                    <br><img class="flow-img" src="{{ url_for('static', filename='Software.jpg') }}">
                     <br><h4>Sstem Archieture</h4>
                     <br>Frontend: HTML, CSS, Jina templates
                     <br>Backend: Flask routing, Python logic, Werkzeug hashing
@@ -40,12 +41,17 @@
                     <br>Documentation: Doucments of SDLC phases. Requies completion and review of each phases.
                     <br>Security: changes from insecure plain text to secure hashing and parameterised queries.
                 </td>
-                <td><a href="{{ url_for('logs') }}">Progress Logs</a><br>
+                <td><h4><a href="{{ url_for('logs') }}">Progress Logs</a></h4><br>
+                    Date<br>
+                    Title<br>
+                    Details<br>
+                    Challenges<br>
+                    Solutions
                 </td>
                 <td><h4>Core Intergration</h4>
-                <br>Module: Connected Frontend Jinga to Flask backedn routes, allows user to naviate login pages to dashboard
-                <br>Database: Ensure Flask routes open and clse SQLite database connection
-                <br>Session: Intergrate Flask Sessions across all routes, ensures user_id is available for displaying user logs
+                <br>Connect Frontend Jinga to Flask backend routes, allows user to navigate login pages to dashboard
+                <br>Ensure Flask routes open and clse SQLite database connection
+                <br>Intergrate Flask Sessions across all routes, ensures user_id is available for displaying user logs
                 <br><h4>Security Intergration</h4>
                 <br>Insecure and Secure app, through plain text password and secure hashing
                 <br>Paramertized Queries: SQL queries intergated safely

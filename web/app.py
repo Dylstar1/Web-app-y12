@@ -43,7 +43,7 @@ def get_db_connection(): # connect to the database.db
 @app.route('/')
 def index():
     # redirect to the login page 
-    return render_template('login.html')
+    return render_template('dashboard.html')
 
 @app.route('/addprogress', methods = ['GET', 'POST'])
 @login_required

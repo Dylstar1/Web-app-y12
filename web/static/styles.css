@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 10px;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #e6ecf3;
     color:black;
 }
 header {
@@ -31,6 +31,8 @@ header {
     top: 100%; 
     padding: 5px 0;
     border-radius: 0 0 4px 4px;
+    transition: 1.0s;
+
 }
 
 .dropdown-content a {
@@ -39,9 +41,10 @@ header {
     text-decoration: none;
     display: block; 
     height: auto;
-    transition: background-color 0.3s;
+    transition: background-color 1.0s;
     box-shadow: none !important; 
     text-align: left;
+
 }
 
 .dropdown:hover .dropdown-content {
@@ -84,13 +87,22 @@ navbar a:hover {
     text-underline-offset: 2.5px; 
     background-color: #023a76;
     box-shadow: inset 0 0 0 1px white; 
+    transition: background-color 0.5s;
+
 }
 
-.dropdown-content a:hover {
-    background-color: #004080; 
-    text-decoration: none;
-    text-underline-offset: 0;
-} 
+.subject {
+    display: inline-block;
+    background-color: #3366cc;
+    color: white;
+    padding: 10px 16px;
+    min-width: 146px;
+    border-radius: 4px 4px 0 0;
+    text-decoration: underline;
+    text-underline-offset: 2.5px;
+    border: 1px solid #0a0a0a;    
+
+}
 
 h1 { 
     text-align: center; 
@@ -106,11 +118,6 @@ h4 {
     padding: 5px;
 }
 
-.sdlc {
-    margin: 5px;
-    padding: 5px;
-}
-
 .toquizz {
     background-color: #0256c3;
     color: rgb(255, 255, 255); 
@@ -120,12 +127,16 @@ h4 {
     border-radius: 3px;
     border-color: #0a0a0a;
     text-decoration: none;
+    border: 1px solid #0a0a0a;    
+
 }
 
 .toquizz:hover {
     background-color: #004080; 
     text-decoration: none;
-    text-underline-offset: 0;}
+    text-underline-offset: 0;
+}
+    
 
 .revise {
     background-color: #0256c3;
@@ -135,6 +146,8 @@ h4 {
     border-radius: 3px;
     border-color: #0a0a0a;
     text-decoration: none;
+    border: 1px solid #0a0a0a;    
+
 }
 
 .revise:hover {
@@ -148,26 +161,39 @@ h4 {
     margin: 15px auto;
     padding: 15px;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0, 0.1);
+    box-shadow: 0 0 100px rgba(0,0,0, 0.1);
     align-content: center;
+    vertical-align: top;
 }
+
+td, th {
+    vertical-align: top;
+  }
 
 .progress {
     text-align: center;
     border: #0a0a0a;
 }
 
+.flow-img {
+    width: 400px;
+    height: auto;
+    border-radius: 10px;
+}
+
 form {
     max-width: 500px;
     margin: 15px auto;
+    margin-top: 50px;
     padding: 15px;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0, 0.1);
+    box-shadow: 0 0 100px rgba(0, 8, 255, 0.1);
     align-content: center;
+    border: 2px solid #3da7f4;    
 }
 
 table {
-    max-width: 1000px;
+    max-width: 1500px;
     margin: 15px auto;
     padding: 20px;
     border-radius: 1px;
