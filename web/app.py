@@ -156,6 +156,29 @@ def edit_log():
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
+    # Insecure Login
+    """ 
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        print("connected to db")
+        cursor.execute(f"SELECT * FROM users WHERE username = '{username}' AND passward = '{password}'")
+        user = cursor.fetchone()
+        conn.close()
+        print('checked sql')
+        if user:
+            print('user')
+            session['user_id'] = user['id']
+            return redirect(url_for('dashboard'))
+        else:
+            print('no user')
+            flash('Invalid username or password', 'error')
+            return redirect(url_for('login'))"""
+    
+    # Secure Login
+
     # If the user is already logged in, redirect to the dashboard
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
