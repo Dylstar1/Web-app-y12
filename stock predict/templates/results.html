@@ -1,0 +1,19 @@
+{% extends 'base.html' %}   
+{% block title %}Quiz Results - Smart Study Quiz App{% endblock %}
+{% block heading %}Quiz Results{% endblock %}
+{% block content %}
+    <form method="GET" action="{{ url_for('quizz') }}">
+    <div>
+        <h2>Quiz Complete</h2>
+        <!-- The score of most recent quiz -->
+        <h3>Score:</h3>
+        <p>{{ score }} / {{ total }}</p>
+        <button type="submit">Retry</button>
+        <!-- revise button if score is less than 50% -->
+        {% if score / total < 0.5 %}
+            <a class="revise" href="{{ url_for('flashcards') }}">Revise Notes</a>
+        {% endif %}
+        <!-- Display top result in the current session -->
+        <p>Best: {{ highest_number}}</p>
+    </div>
+{% endblock %}

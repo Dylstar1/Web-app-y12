@@ -2,19 +2,26 @@
 {% block title %}Add Progress - Smart Study Quiz App{% endblock %}
 {% block heading %}Add Progress{% endblock %}
 {% block content %}
-    <form method="POST" action="{{ url_for('addprogress') }}">
-        <!-- Post logs form-->
-        <h4>Add Progress</h4><br>
+    <form method="POST" action="{{ url_for('add_progress') }}" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <!--
         <p>Date
         <input type="date" name="date" required></p>
         <p>Title
         <input type="text" name="title" placeholder="Title" required></p>
         <p>Details
         <input type="text" name="details" placeholder="Details" required></p>
-        <p>Challenges
-        <input type="text" name="challenges" placeholder="Challenges" required></p>
-        <p>Solutions
-        <input type="text" name="solutions" placeholder="Solutions" required></p>
-        <button type="submit">Post progress</button>
+        <p>Image
+        <input type="file" name="image" accept="image/*"></p>-->
+        
+        <!-- utilise CSRF fields from forms.py-->
+
+        <p>Date {{ form.date() }}</p>
+        <p>Title {{ form.title() }}</p>
+        <p>Details {{ form.details() }}</p>
+        <p>Image {{ form.image() }}</p>
+        <p>{{ form.submit }}</p>
+
+        <!--<button type="submit">Post Progress</button>-->
     </form>
 {% endblock %}

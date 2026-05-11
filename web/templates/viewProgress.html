@@ -1,0 +1,37 @@
+{% extends 'base.html' %}   
+{% block title %}View Progress - Smart Study Quiz App{% endblock %}
+{% block heading %}View Progress{% endblock %}
+{% block content %}
+    {% if posts %}
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Title</th>
+                <th>Details</th>
+                <th>Challenges</th>
+                <th>Solutions</th>
+                <th>Image</th>
+            </tr>
+        {% for post in posts %}
+            <tr>
+                <td>{{ post.date }}</td>
+                <td>{{ post.title }}</td>
+                <td>{{ post.details }}</td> 
+                <td>{{ post.challenges }}</td>
+                <td>{{ post.solutions }}</td>               
+                <td>
+                    {% if post.image_path %}
+                        <img src="{{ url_for('static', filename=post.image_path) }}" 
+                            alt="Progress Image" 
+                            width="150">
+                    {% else %}
+                        No image
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>No progress entries found.</p>
+    {% endif %}
+{% endblock %}

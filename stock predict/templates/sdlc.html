@@ -1,0 +1,73 @@
+{% extends 'base.html' %}   
+{% block title %}SDLC - Smart Study Quiz App{% endblock %}
+{% block heading %}SDLC{% endblock %}
+{% block content %}
+        <table>
+            <!-- SDLC table-->
+            <tr> 
+                <th>Requirements definition</th>
+                <th>determining specifications</th>
+                <th>design</th>
+                <th>development</th>
+                <th>Intergration</th>
+                <th>testing/debugging</th>
+            </tr>
+            <tr> 
+                <td><h4>Objective:</h4><br> Create a study app with that helps students study and complete quizzes.<br>
+                    <h4>Fuctional:</h4><br>- User authentication<br>- Database Setup<br>- Progress Logging<br>- Quiz<br>- SDLC Documentation<br>
+                    <h4>Non fuctional:</h4> <br>- Responsive App<br> - Flask + Jinga used<br>- Insecure and secure app<br>- Version controlled with git<br>- Handle errors                    
+                    <br> <h4>Constraints</h4><br>- Only use Flask, sqlite3, Built in Python libaries<br>- Only 1 subject for quizzes<br>- No PWA Features
+                </td>
+                <td><h4>Objective:</h4><br>Allow user login and authentication, save data in a database, log progress and a basic quiz
+                    <br>The app will be responsive, use flask and jinga, Demonstrate insecure vs. secure practices, version controled code with git, handle basic errors
+                    <br><h4>Project scope:</h4><br>User login, quizzes, progress logs. NOT included: PWA offline mode
+                    <br><h4>Deliverables:</h4><br>working Flask app, SQLite database, SDLC pages, progress logs, live demo.
+                    <br><h4>Acceptance criteria:</h4><br>User can log in securely, Quiz pulls questions from database, Score saves correctly, Progress logs work for each user
+                </td>
+                <td>
+                    <br><h4>Diagram</h4>
+                    <br><img class="flow-img" src="{{ url_for('static', filename='Software.jpg') }}">
+                    <br><h4>Sstem Archieture</h4>
+                    <br>Frontend: HTML, CSS, Jina templates
+                    <br>Backend: Flask routing, Python logic, Werkzeug hashing
+                    <br>Database: SQLite Database, raw sqlite3
+                    <br><h4>Database</h4>
+                    <br>Users: Store id, username, password, email
+                    <br>Progress_logs: Stores id, user_id, date, title, details, image_path, challenges, solutions
+                    <br>Quiz: Stores id, question, options_0-3, correct_answer
+                    <br>Scores: Stores, id, user_id, score, total_questions
+                    <br><h4>Waterfall Justifcation</h4>
+                    <br>Requirements Stability: Functional Requirements: user authentication, progress logs, quiz. Non Functional: security, fask and SQLite. These are fixed and defined aspects of the project 
+                    <br>Documentation: Doucments of SDLC phases. Requies completion and review of each phases.
+                    <br>Security: changes from insecure plain text to secure hashing and parameterised queries.
+                </td>
+                <td><h4><a href="{{ url_for('logs') }}">Progress Logs</a></h4><br>
+                    Date<br>
+                    Title<br>
+                    Details<br>
+                    Challenges<br>
+                    Solutions
+                </td>
+                <td><h4>Core Intergration</h4>
+                <br>Connect Frontend Jinga to Flask backend routes, allows user to navigate login pages to dashboard
+                <br>Ensure Flask routes open and clse SQLite database connection
+                <br>Intergrate Flask Sessions across all routes, ensures user_id is available for displaying user logs
+                <br><h4>Security Intergration</h4>
+                <br>Insecure and Secure app, through plain text password and secure hashing
+                <br>Paramertized Queries: SQL queries intergated safely
+                </td>
+                <td><h4>Functional</h4>
+                <br>Tests for Register/Login Progress logs, Flashcards, quiz and Logout
+                <br><h4>Non Functional</h4>
+                <br>Insecure and Secure tests, SQL and database tests, password and hashing
+                <br><h4>Tests</h4>
+                <br>Unit Tests: Testing Werkzeru hashing, Ensure Insert into users function handles Constraints
+                <br>Intergation Tests: Tests the register route connects to the database and stores user recods and login rout which retrieves the verifcation function, Tests Progress logs and passing data to SQL insert, displaying the data
+                <br>System Tests: Testing system is secure for all pages
+                <br>Requirements: Testing Quiz, User logs, Responsivemness
+                <br>Error Handling: Tests system handles errors, invalid login, unique constraints, using Flask flash messages
+                </td>
+
+            </tr>
+        </table>
+{% endblock %}

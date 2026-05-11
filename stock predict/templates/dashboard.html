@@ -1,0 +1,15 @@
+{% extends 'base.html' %}   
+{% block title %}Dashboard - Smart Study Quiz App{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+{% block content %}
+    <h2 class="dash">Welcome to the Smart Study Quiz App!</h2>
+    <h3>Choose subject:</h3><br>
+    <div class="dropdown">
+        <!-- Dropdown for subject select-->
+        <a href="#" class="subject">Software Enginering</a>
+        <div class="dropdown-content">
+            <a href="{{ url_for('flashcards') }}">Software Flashcards</a>
+            <a href="{{ url_for('quizz') }}">Software Quizz</a>
+        </div>
+    </div>
+{% endblock %}
