@@ -1,0 +1,40 @@
+{% extends 'base.html' %}   
+{% block title %}Transactions - Smart Signal{% endblock %}
+{% block heading %}Transactions{% endblock %}
+
+{% block content %}
+<h2 class="transactions">Your Transaction History</h2>
+
+{% if transactions %}
+    <thead class="table-light">
+        <table>
+        <tr>
+            <th>Date & Time</th>
+            <th>Ticker</th>
+            <th>Type</th>
+            <th class="text-end">Shares</th>
+            <th class="text-end">Price per Share</th>
+            <th class="text-end">Total Amount</th>
+            </tr>
+</thead>
+<tbody>
+    {% for tx in transactions %}
+    <tr>
+        <td>{{ tx.timestamp }}</td>
+        <td>{{ tx.ticker }}</td>
+        <td>{{ tx.transaction_type }}</td>
+        <td class="text-end">{{ tx.shares }}</td>
+        <td class="text-end"> ${{ tx.price_per_share | round(2) }}</td>
+        <td class="text-end"> ${{ tx.total_amount | round(2) }}
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+
+{% endif%}
+
+{% endblock %}
+
+
+

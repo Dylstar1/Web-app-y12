@@ -2,7 +2,7 @@
 {% block title %}Add Progress - Smart Study Quiz App{% endblock %}
 {% block heading %}Add Progress{% endblock %}
 {% block content %}
-    <form method="POST" action="{{ url_for('add_progress') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ url_for('add_progress') }}" enctype="multipart/form-data" novalidate> 
         {{ form.csrf_token }}
         <!--
         <p>Date
@@ -15,11 +15,13 @@
         <input type="file" name="image" accept="image/*"></p>-->
         
         <!-- utilise CSRF fields from forms.py-->
-
+        
         <p>Date {{ form.date() }}</p>
         <p>Title {{ form.title() }}</p>
         <p>Details {{ form.details() }}</p>
         <p>Image {{ form.image() }}</p>
+        <p>Challenges {{ form.challenges() }}</p>
+        <p>Solutions {{ form.solutions() }}</p>
         <p>{{ form.submit }}</p>
 
         <!--<button type="submit">Post Progress</button>-->

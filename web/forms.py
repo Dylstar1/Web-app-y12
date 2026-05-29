@@ -41,7 +41,14 @@ class AddProgressForm(FlaskForm):
         Length(max=100)
     ])
     details = TextAreaField('Details', validators=[DataRequired()])
+    challenges = TextAreaField('challenges', validators=[DataRequired()])
+    solutions = TextAreaField('solutions', validators=[DataRequired()])
+
     image = FileField('Upload Supporting Image (optional)', validators=[
         FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Only image files are allowed!')
     ])
     submit = SubmitField('Save Progress Log')
+
+class QuoteForm(FlaskForm):
+    tickerName = StringField('Ticker Name', validators=[DataRequired()])
+    submit = SubmitField('Search')
