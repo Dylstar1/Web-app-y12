@@ -5,54 +5,55 @@
 
 {% block content %}
 
-    <!-- Summary Cards -->
-  
-    <h2>Cash Balance</h2>
-    <h3>${{ cash_balance | default(0) | round(2) }}</h3>
+    <div class="portfolio-grid">
 
+        <div class="portfolio-box cash">
+            <h2>Cash Balance</h2>
+            <h3>${{ cash_balance | default(0) | round(2) }}</h3>
+        </div>
 
-    <h2>Portfolio Value</h2>
-    <h3>${{ portfolio_value | default(0) | round(2) }}</h3>
+        <div class="portfolio-box value">
+            <h2>Portfolio Value</h2>
+            <h3>${{ portfolio_value | default(0) | round(2) }}</h3>
+        </div>
 
-    <h2>Overall Return</h2>
-    <h3>
-        {{ overall_return }}%      5tyy
+        <div class="portfolio-box return">
+            <h2>Overall Return</h2>
+            <h3>{{ overall_return }}%</h3>
+        </div>
 
-        
-    </h3>
+        <div class="portfolio-box pnl">
+            <h2>Total P&L</h2>
+            <h3>${{ total_unrealized_pnl | default(0) | round(2) }}</h3>
+        </div>
 
-    <h2>Total P&L</h2>
-    <h3>
-        ${{ total_unrealized_pnl | default(0) | round(2) }}
-    </h3>
-
-    <!-- Top Gainer & Top Loser -->
-    {% if top_gainer and top_gainer.unrealized_pnl is not none and top_gainer.unrealized_pnl > 0 %} 
-        <h2>Top Gainer</h2>
-        <h5>{{ top_gainer.ticker }}</h5>
-        <p>
-            +${{ top_gainer.unrealized_pnl | round(2) }} ({{ top_gainer.pnl_percent }}%)
-        </p>
+        <!-- Top Gainer & Top Loser -->
+        {% if top_gainer and top_gainer.unrealized_pnl is not none and top_gainer.unrealized_pnl > 0 %}
+                <div class="portfolio-box gainer">
+                    <h2>Top Gainer</h2>
+                    <h3>{{ top_gainer.ticker }}</h3>
+                    <p>
+                        +${{ top_gainer.unrealized_pnl | round(2) }} ({{ top_gainer.pnl_percent }}%)
+                    </p>
+                </div>
     {% endif %}
 
-    {% if top_loser and top_loser.unrealized_pnl < 0 %}
-    
-        <h3>Top Loser</h3>
-        <h5>{{ top_loser.ticker }}</h5>
-        <p>
-            ${{ top_loser.unrealized_pnl | round(2) }} ({{ top_loser.pnl_percent }}%)
-        </p>
-            
-    {% endif %}
-
-    <!-- Asset Allocation Pie Chart -->
-    {% if portfolio_value is defined and portfolio_value > 0 %}
-        <h5>Asset Allocation</h5>
-        {{ allocation_chart | safe }}
-    {% endif %}
+            {% if top_loser and top_loser.unrealized_pnl < 0 %}
+                <div class="portfolio-box loser">
+                    <h2>Top Loser</h2>
+                    <h3>{{ top_loser.ticker }}</h3>
+                    <p>
+                        ${{ top_loser.unrealized_pnl | round(2) }} ({{ top_loser.pnl_percent }}%)
+                    </p>
+                </div>
+        {% endif %}
+    </div>
 
     <!-- Holdings Table -->
-    <h4>Your Portfolio Holdings</h4>
+        <div class="holding">
+            <h3>Your Portfolio Holdings</h3>
+        </div>
+    </div>
 
     {% if holdings %}
         <table class="table table-hover align-middle">
@@ -93,7 +94,7 @@
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="ticker" value="{{ holding.ticker }}">
                             <input type="number" name="shares" min="1" value="1">
-                            <button type="submit" class="btn btn-sm btn-outline-danger"> Buy </button>
+                            <button type="submit" class="buy"> Buy </button>
                         </form>
                     </td>
 
@@ -104,7 +105,7 @@
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="ticker" value="{{ holding.ticker }}">
                             <input type="number" name="shares" min="1" max="{{ holding.shares }}" value="1" class="form-control form-control-sm" style="width: 85px;" required>
-                            <button type="submit" class="btn btn-sm btn-outline-danger"> Sell </button>
+                            <button type="submit" class="btn btn-sm btn-danger"> Sell </button>
                         </form>
 
                         <!-- Sell All Button -->
@@ -119,13 +120,23 @@
                 {% endfor %}
             </tbody>
         </table>
+
     {% else %}
         You don't own any stocks yet.
         <a href="{{ url_for('quote_stock') }}">Search for stocks to buy →</a>
     {% endif %}
+
+    <!-- Asset Allocation Pie Chart -->
+    <div class="asset">
+        {% if portfolio_value is defined and portfolio_value > 0 %}
+            <!-- <h5>Asset Allocation</h5>-->
+            {{ allocation_chart | safe }}
+        {% endif %}
+    </div>
 
 {% endblock %}
 
 {% block extra_scripts %}
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock %}
+

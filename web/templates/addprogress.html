@@ -3,27 +3,16 @@
 {% block heading %}Add Progress{% endblock %}
 {% block content %}
     <form method="POST" action="{{ url_for('add_progress') }}" enctype="multipart/form-data" novalidate> 
+        
         {{ form.csrf_token }}
-        <!--
-        <p>Date
-        <input type="date" name="date" required></p>
-        <p>Title
-        <input type="text" name="title" placeholder="Title" required></p>
-        <p>Details
-        <input type="text" name="details" placeholder="Details" required></p>
-        <p>Image
-        <input type="file" name="image" accept="image/*"></p>-->
-        
-        <!-- utilise CSRF fields from forms.py-->
-        
+
         <p>Date {{ form.date() }}</p>
         <p>Title {{ form.title() }}</p>
         <p>Details {{ form.details() }}</p>
         <p>Image {{ form.image() }}</p>
         <p>Challenges {{ form.challenges() }}</p>
         <p>Solutions {{ form.solutions() }}</p>
-        <p>{{ form.submit }}</p>
+        <p>{{ form.submit() }}</p>
 
-        <!--<button type="submit">Post Progress</button>-->
     </form>
 {% endblock %}

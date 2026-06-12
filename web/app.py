@@ -18,6 +18,7 @@ from dotenv import load_dotenv  # use more secure session key
 from datetime import datetime
 import yfinance as yf
 import plotly.express as px
+import plotly.graph_objects as go
 import plotly.io as pio
 
 #region init
@@ -170,54 +171,40 @@ def get_stock_info(ticker: str):
         print(f"Error fetching {ticker}: {e}")
         return None, None, f"Failed to fetch data for {ticker}. Please try again."
 
-@app.route('/')
-def index():
-    # return 'Index page'
-    return render_template('dashboard.html')
-
 @app.route('/add_progress', methods=['GET', 'POST'])
 @login_required
 def add_progress():
-    form = AddProgressForm()  # for prevention of CSRF
+    form = AddProgressForm()
 
     if form.validate_on_submit():
-        date_str = form.date.data.strftime('%Y-%m-%d')   # Convert date to string
-        title = clean_log_title(form.title.data)  # input sanitisation
+        date_str = form.date.data.strftime('%Y-%m-%d')
+        title = clean_log_title(form.title.data)
         details = clean_log_details(form.details.data)
-        challenges = challenges(form.challenges.data)
-        solutions = solutions(form.solutions.data)
 
+        # FIXED VARIABLE NAMES
+        challenge_text = form.challenges.data
+        solution_text = form.solutions.data
 
-        # Uploading images
-        image_path = None  # initialising image_path
+        # Image upload
+        image_path = None
         if form.image.data and form.image.data.filename:
-            file = form.image.data  # store image into variable
-            print(f"DEBUG: File received - Filename: {file.filename}")
-            print(f"DEBUG: File content type: {file.content_type}")
-
-            filename = secure_filename(file.filename)  # run the filename through werkzeug
-            unique_filename = f"user_{current_user.id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{filename}"  # adding metadata to file name
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)  # set the file path with the folder so the app knows where to store the file
+            file = form.image.data
+            filename = secure_filename(file.filename)
+            unique_filename = f"user_{current_user.id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{filename}"
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
 
             try:
-                # upload file to the server
                 file.save(file_path)
                 image_path = f"uploads/{unique_filename}"
-                print(f"DEBUG: Image successfully saved to: {file_path}")
-                print(f"DEBUG: image_path saved in DB will be: {image_path}")
             except Exception as e:
-                print(f"ERROR saving image: {e}")
                 flash(f'Failed to save image: {str(e)}', 'warning')
-        else:
-            print("DEBUG: No image file was uploaded or filename was empty")
-
 
         try:
             with get_db_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "INSERT INTO progressLogs (user_id, date, title, details, image_path, challenges, soloutions) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    (current_user.id, date_str, title, details, image_path, challenges, solutions,)
+                    "INSERT INTO progressLogs (user_id, date, title, details, image_path, challenges, solutions) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    (current_user.id, date_str, title, details, image_path, challenge_text, solution_text)
                 )
                 conn.commit()
 
@@ -228,9 +215,10 @@ def add_progress():
             flash('An error occurred while saving your progress.', 'error')
             print(f"ERROR saving progress: {e}")
             import traceback
-            traceback.print_exc()  # Print full traceback in console
+            traceback.print_exc()
 
     return render_template('addProgress.html', form=form, username=current_user.username)
+
 
 @app.route('/buy_stock', methods=['POST'])
 @login_required

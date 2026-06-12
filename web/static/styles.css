@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 10px;
     padding: 0;
-    background-color: #e6ecf3;
+    background-color: #775cf0;
     color:black;
 }
 header {
@@ -104,6 +104,12 @@ h1 {
 
 h2.transactions { 
     text-align: center; 
+    background-color: #3897fc;
+    border: 2px solid black;
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 10px;
+    border-radius: 12px;
 }
 
 h4 {
@@ -118,13 +124,18 @@ h4 {
 
 .table {
     max-width: 1000px;
-    margin: 15px auto;
-    padding: 15px;
-    border-radius: 5px;
+    margin: 0px auto;
+    padding: 0px;
+    border-top: 0px;
+    border: 1px solid black;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
     box-shadow: 0 0 100px rgba(0,0,0, 0.1);
     align-content: center;
     vertical-align: top;
-
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
 }
 
 td, th {
@@ -133,12 +144,12 @@ td, th {
 
 td {
     vertical-align: top;
-    background-color: #5dcaeb;
+    background-color: #93e2fa;
 }
 
 th.buy{
     vertical-align: top;
-    background-color: rgb(47, 255, 47);
+    background-color: #39e639;
 }
 
 th.sell{
@@ -166,6 +177,7 @@ form {
     box-shadow: 0 0 100px rgba(0, 8, 255, 0.1);
     align-content: center;
     border: 2px solid #000000;    
+    background-color: rgb(210, 133, 236);
 }
 
 form.share {
@@ -187,6 +199,7 @@ table {
     box-shadow: 0 0 25px rgba(0,0,0, 0.1);
     align-content: center;
 }
+
 table th, table td, table tr {
     border: 1.5px solid #000000; 
     padding: 6px 10px;
@@ -209,7 +222,7 @@ table th {
 }
 
 .success {
-    color: green;
+    color: rgb(9, 84, 9);
     text-align: center;
     margin-bottom: 5px;
     bottom: 0;
@@ -232,3 +245,94 @@ table th {
 .btn-red:hover {
     background-color: #cc0000;   /* slightly darker red */
 }
+
+button.buy {
+    background-color: #39e639;   /* green */
+    color: rgb(0, 0, 0);
+    border: 1px solid #000000;
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button.buy:hover {
+    background-color: #39e639;   /* darker green */
+}
+
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    margin: 20px auto;
+}
+
+.portfolio-box {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    border: 2px solid black;
+}
+
+.cash { 
+    background-color: #26d9f8; 
+}     
+
+.value { 
+    background-color: #c82af0; 
+}
+
+.return { 
+    background-color: #FFD700; 
+}
+
+.pnl {
+    background-color: #7bf508; 
+}
+
+.loser {
+    background-color: #f14223; 
+}
+
+.gainer {
+    background-color: #25e825;
+}
+
+.asset {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;  
+    box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    border: 2px solid black;
+    max-width: 1000px;
+    margin: 20px auto;
+}
+
+.holding {
+    background: #3897fc;
+    padding-bottom: 10px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    text-align: center;
+    box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    border: 2px solid black;
+    border-bottom: 0;
+    max-width: 996px;
+    margin: 0px auto;
+}
+
+.portfolio-box h2 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.portfolio-box h3 {
+    margin: 10px 0 0;
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+

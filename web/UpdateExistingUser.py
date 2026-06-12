@@ -28,11 +28,11 @@ def init_database():
     if users_without_balance:
         for user in users_without_balance:
             cursor.execute(
-                "INSERT INTO UserBalances (user_id, cash_balance) VALUES (?, 10000.00)",
+                "INSERT INTO UserBalances (user_id, cash_balance) VALUES (?, 200000.00)",
                 (user['id'],)
             )
         conn.commit()
-        print(f"✅ Added $10,000 starter capital to {len(users_without_balance)} existing user(s).")
+        print(f"✅ Added $20 capital to {len(users_without_balance)} existing user(s).")
     else:
         print("✅ All existing users already have a balance.")
 
@@ -48,7 +48,7 @@ def init_database():
     print(f"\n🎉 Database initialization completed!")
     print(f"   Total Users: {total_users}")
     print(f"   Users with Balance: {total_balances}")
-    print(f"   Starter Capital: $10,000 per user")
+    print(f"   Starter Capital: $200,000 per user")
 
     conn.close()
 
