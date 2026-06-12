@@ -335,4 +335,8 @@ button.buy:hover {
     font-weight: bold;
 }
 
-
+.stockinfo {
+    padding: 10px;
+    border: 2px solid black;
+    background-color: rgb(76, 153, 235);
+}
