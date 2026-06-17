@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS progresslogs (
     title TEXT NOT NULL UNIQUE,
     details TEXT NOT NULL,
     image_path TEXT,
-    challenges TEXT NOT NULL,
-    solutions TEXT NOT NULL
+    challenges TEXT,
+    solutions TEXT
 );
 
 CREATE TABLE IF NOT EXISTS quizzes (
@@ -45,7 +45,7 @@ DELETE FROM score;
 -- Stores each user's cash balance (with starter capital)
 CREATE TABLE IF NOT EXISTS UserBalances (
     user_id INTEGER PRIMARY KEY,
-    cash_balance REAL DEFAULT 10000.00,      -- $10,000 starting capital
+    cash_balance REAL DEFAULT 20000.00,      -- $10,000 starting capital
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -80,3 +80,6 @@ CREATE INDEX IF NOT EXISTS idx_transactions_user ON Transactions(user_id);
 CREATE INDEX IF NOT EXISTS idx_transactions_ticker ON Transactions(ticker);
 
 --- sqlite3 database.db .read schema.sql
+UPDATE users 
+SET password = 'scrypt:32768:8:1$QUz0vjuwyoOwERUy$bd58f5317e3c0d4c61d9053ee00d9d79021612355d25cece6c763d0985584fdbaf6fcfc43da626f3df8322aa9ad4c8fa014cf7fb3f0f7585fca54744c7faf7cb' 
+WHERE username = 'smartsignal';

@@ -22,31 +22,45 @@
             <h3>{{ overall_return }}%</h3>
         </div>
 
-        <div class="portfolio-box pnl">
-            <h2>Total P&L</h2>
-            <h3>${{ total_unrealized_pnl | default(0) | round(2) }}</h3>
-        </div>
+        {% if total_unrealized_pnl > 0 %}
+            <div class="portfolio-box profit">
+                <h2>Total P&L</h2>
+                <h3>${{ total_unrealized_pnl | default(0) | round(2) }}</h3>
+            </div>
+        {% endif %}
+
+        {% if total_unrealized_pnl < 0 %}
+            <div class="portfolio-box loss">
+                <h2>Total P&L</h2>
+                <h3>${{ total_unrealized_pnl | default(0) | round(2) }}</h3>
+            </div>
+
+        {% endif %}
 
         <!-- Top Gainer & Top Loser -->
-        {% if top_gainer and top_gainer.unrealized_pnl is not none and top_gainer.unrealized_pnl > 0 %}
-                <div class="portfolio-box gainer">
-                    <h2>Top Gainer</h2>
-                    <h3>{{ top_gainer.ticker }}</h3>
-                    <p>
-                        +${{ top_gainer.unrealized_pnl | round(2) }} ({{ top_gainer.pnl_percent }}%)
-                    </p>
-                </div>
-    {% endif %}
-
+        <div class="portfolio-box gainer">
+            <h2>Top Gainer</h2>
+            {% if top_gainer and top_gainer.unrealized_pnl is not none and top_gainer.unrealized_pnl > 0 %}
+                <h3>{{ top_gainer.ticker }}</h3>
+                <p>
+                    +${{ top_gainer.unrealized_pnl | round(2) }} ({{ top_gainer.pnl_percent }}%)
+                </p>
+            {% else %}
+                <h3>None</h3>
+            {% endif %}
+        </div>
+        
+        <div class="portfolio-box loser">
+            <h2>Top Loser</h2>
             {% if top_loser and top_loser.unrealized_pnl < 0 %}
-                <div class="portfolio-box loser">
-                    <h2>Top Loser</h2>
                     <h3>{{ top_loser.ticker }}</h3>
                     <p>
                         ${{ top_loser.unrealized_pnl | round(2) }} ({{ top_loser.pnl_percent }}%)
                     </p>
-                </div>
-        {% endif %}
+            {% else %}
+                <h3>None</h3>
+            {% endif %}
+        </div>
     </div>
 
     <!-- Holdings Table -->

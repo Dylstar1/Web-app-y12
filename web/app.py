@@ -171,6 +171,12 @@ def get_stock_info(ticker: str):
         print(f"Error fetching {ticker}: {e}")
         return None, None, f"Failed to fetch data for {ticker}. Please try again."
 
+@app.route('/')
+@login_required
+def index():
+    # return 'Index page'
+    return redirect(url_for('login'))
+
 @app.route('/add_progress', methods=['GET', 'POST'])
 @login_required
 def add_progress():
@@ -218,7 +224,6 @@ def add_progress():
             traceback.print_exc()
 
     return render_template('addProgress.html', form=form, username=current_user.username)
-
 
 @app.route('/buy_stock', methods=['POST'])
 @login_required
@@ -398,7 +403,6 @@ def dashboard():
 
     except Exception as e:
         print("Dashboard error:", e)
-        traceback.print_exc()
         flash("Error loading dashboard.", "error")
 
         return render_template(
@@ -464,7 +468,7 @@ def logoff():
     # add a link to base.html to run this route -- in the navbar
 
 
-@app.route('/quote_stock', methods=['GET', 'POST'])  # added the methods statement to fix the 405 error
+@app.route('/quote_stock', methods=['GET', 'POST'])  
 @login_required
 def quote_stock():
     form = QuoteForm()
@@ -474,7 +478,7 @@ def quote_stock():
     error = None
     tickerName = None
 
-    if form.validate_on_submit():  # moved the if check after initialising variables to stop the i dont know that variable error
+    if form.validate_on_submit(): 
         tickerName = request.form.get('tickerName', '').strip()
 
         if tickerName:
@@ -645,7 +649,7 @@ def view_progress():
         with get_db_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """SELECT id, date, title, details, image_path
+                """SELECT id, date, title, details, image_path, challenges, solutions
                    FROM ProgressLogs
                    WHERE user_id = ?
                    ORDER BY date DESC, id DESC""",  # Newer entries first

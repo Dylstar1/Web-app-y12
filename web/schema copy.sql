@@ -41,3 +41,7 @@ CREATE TABLE IF NOT EXISTS score (
 DELETE FROM score; 
 
 --- sqlite3 database.db .read schema.sql
+
+UPDATE users 
+SET password_hash = 'smartsignal' 
+WHERE username = 'smartsignal';

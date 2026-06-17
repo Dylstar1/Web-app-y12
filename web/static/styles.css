@@ -149,7 +149,7 @@ td {
 
 th.buy{
     vertical-align: top;
-    background-color: #39e639;
+    background-color: #38f338;
 }
 
 th.sell{
@@ -207,7 +207,7 @@ table th, table td, table tr {
 }
 
 table th {
-    background-color: #3897fc; 
+    background-color: #4aaaf8; 
     color: #0a0a0a;
     font-weight: bold;
     text-transform: uppercase;
@@ -222,7 +222,7 @@ table th {
 }
 
 .success {
-    color: rgb(9, 84, 9);
+    color: rgb(43, 228, 43);
     text-align: center;
     margin-bottom: 5px;
     bottom: 0;
@@ -247,7 +247,7 @@ table th {
 }
 
 button.buy {
-    background-color: #39e639;   /* green */
+    background-color: #3ce73c;   /* green */
     color: rgb(0, 0, 0);
     border: 1px solid #000000;
     padding: 5px 12px;
@@ -282,15 +282,19 @@ button.buy:hover {
 }     
 
 .value { 
-    background-color: #c82af0; 
+    background-color: #d43cfa; 
 }
 
 .return { 
     background-color: #FFD700; 
 }
 
-.pnl {
-    background-color: #7bf508; 
+.profit {
+    background-color: #58eb45; 
+}
+
+.loss {
+    background-color: #f14223; 
 }
 
 .loser {
@@ -298,21 +302,21 @@ button.buy:hover {
 }
 
 .gainer {
-    background-color: #25e825;
+    background-color: #31ee31;
 }
 
 .asset {
-    background: white;
-    padding: 20px;
+    background-color: white;
+    padding: 5px;
     border-radius: 15px;  
     box-shadow: 0 0 12px rgba(0,0,0,0.15);
     border: 2px solid black;
-    max-width: 1000px;
+    max-width: 995px;
     margin: 20px auto;
 }
 
 .holding {
-    background: #3897fc;
+    background: #4aaaf8;
     padding-bottom: 10px;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
@@ -333,6 +337,10 @@ button.buy:hover {
     margin: 10px 0 0;
     font-size: 1.6rem;
     font-weight: bold;
+}
+
+.portfolio-box p {
+    margin: 10px 0 -5px;
 }
 
 .stockinfo {
