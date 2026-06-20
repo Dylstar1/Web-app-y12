@@ -20,6 +20,11 @@ import yfinance as yf
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier 
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import joblib
 
 #region init
 app = Flask(__name__)
@@ -419,7 +424,6 @@ def dashboard():
             allocation_chart=allocation_chart
         )
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:  # if user logged in, send to dashboard
@@ -467,6 +471,9 @@ def logoff():
     return redirect(url_for('login'))
     # add a link to base.html to run this route -- in the navbar
 
+#@app.route('/quote_stock', methods=['GET', 'POST'])  
+#@login_required
+#def predict():
 
 @app.route('/quote_stock', methods=['GET', 'POST'])  
 @login_required
@@ -488,7 +495,6 @@ def quote_stock():
             error = "Please enter a stock ticker symbol (e.g. BHP.AX)"
 
     return render_template('quote_stock.html', form=form, stock_data=stock_data, chart_data=chart_data, error=error, tickerName=tickerName, username=current_user.username)
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
