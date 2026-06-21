@@ -236,16 +236,20 @@ def predictiondata(ticker: str):
             expected_growth_5y=growth_5y
         )
 
+       # 🔹 Initialize chart_data dictionary defaults first
         chart_data = {
             'dates': hist_dates,
             'close': [round(p, 2) for p in close_prices],
             'pred_dates': pred_dates,
             'pred_prices': pred_prices,
-            'action': "HOLD",   
+            'action_signal': "HOLD",      
+            'action_class': "box-hold"
         }
 
         clean_ticker = ticker.strip().upper()
+        holding_row = None  # Declare local variable tracker early
 
+        # 🔹 ISOLATE THE DB TRANSACTION BLOCK COMPLETELY
         try:
             with get_db_connection() as conn:
                 cursor = conn.cursor()
@@ -254,26 +258,32 @@ def predictiondata(ticker: str):
                     (current_user.id, clean_ticker)
                 )
                 holding_row = cursor.fetchone()
+                # The connection automatically closes safely right here at the end of the 'with' block
+        except Exception as db_err:
+            print(f"Database read transaction failed: {db_err}")
 
-            if holding_row:
-                avg_buy_price = float(holding_row['average_buy_price'])
+        # 🔹 RUN THE MACHINE LEARNING MATHEMATICS SAFELY OUTSIDE THE DB LOCK
+        if holding_row:
+            avg_buy_price = float(holding_row['average_buy_price'])
+            
+            if pred_prices and len(pred_prices) > 0 and avg_buy_price > 0:
+                prediction = pred_prices[-1]       
+                custom_margin = avg_buy_price * 0.25  # Modernized 25% threshold formula
                 
-                if pred_prices and len(pred_prices) > 0 and avg_buy_price > 0:
-                    prediction = pred_prices[-1]       
-                    
-                    if prediction < avg_buy_price - (avg_buy_price * 0.25):
-                        chart_data['action'] = "Buy"
-                    elif prediction > avg_buy_price + (avg_buy_price * 0.25):
-                        chart_data['action'] = "Sell"
-                    else:
-                        chart_data['action'] = "HOLD"
-            else:
-                chart_data['action'] = "No Stocks Owned"
+                if prediction > (avg_buy_price + custom_margin):
+                    chart_data['action_signal'] = "Buy"
+                    chart_data['action_class'] = "box-Buy"
+                elif prediction < (avg_buy_price - custom_margin):
+                    chart_data['action_signal'] = "Sell"
+                    chart_data['action_class'] = "box-Sell"
+                else:
+                    chart_data['action_signal'] = "HOLD"
+                    chart_data['action_class'] = "box-hold"
+        else:
+            # Fallback configuration layout if the user doesn't own shares yet
+            chart_data['action_signal'] = "NO ACTIVE POSITION HELD"
+            chart_data['action_class'] = "box-neutral"
 
-        except Exception as e:
-            print(f"Database lookup or internal signal math logic failed: {e}")
-            chart_data['action'] = "ERROR"
-        
         return stock_data, chart_data, None
 
     except Exception as e:
