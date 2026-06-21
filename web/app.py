@@ -56,8 +56,6 @@ class User(UserMixin):
         self.username = username
 #endregion
 
-#region subroutines
-# run user input to remove dangerous content
 def clean_input(s: str, allow_html: bool = False) -> str:
     # Strip dangerous content. allow_html=False removes all tags.
     s = s.strip()
@@ -236,20 +234,18 @@ def predictiondata(ticker: str):
             expected_growth_5y=growth_5y
         )
 
-       # 🔹 Initialize chart_data dictionary defaults first
         chart_data = {
             'dates': hist_dates,
             'close': [round(p, 2) for p in close_prices],
             'pred_dates': pred_dates,
             'pred_prices': pred_prices,
-            'action_signal': "HOLD",      
+            'action': "HOLD",      
             'action_class': "box-hold"
         }
 
         clean_ticker = ticker.strip().upper()
-        holding_row = None  # Declare local variable tracker early
+        holding_row = None  
 
-        # 🔹 ISOLATE THE DB TRANSACTION BLOCK COMPLETELY
         try:
             with get_db_connection() as conn:
                 cursor = conn.cursor()
@@ -258,30 +254,27 @@ def predictiondata(ticker: str):
                     (current_user.id, clean_ticker)
                 )
                 holding_row = cursor.fetchone()
-                # The connection automatically closes safely right here at the end of the 'with' block
         except Exception as db_err:
             print(f"Database read transaction failed: {db_err}")
 
-        # 🔹 RUN THE MACHINE LEARNING MATHEMATICS SAFELY OUTSIDE THE DB LOCK
         if holding_row:
             avg_buy_price = float(holding_row['average_buy_price'])
             
             if pred_prices and len(pred_prices) > 0 and avg_buy_price > 0:
                 prediction = pred_prices[-1]       
-                custom_margin = avg_buy_price * 0.25  # Modernized 25% threshold formula
+                custom_margin = avg_buy_price * 0.25  
                 
                 if prediction > (avg_buy_price + custom_margin):
-                    chart_data['action_signal'] = "Buy"
-                    chart_data['action_class'] = "box-Buy"
+                    chart_data['action'] = "Buy"
+                    chart_data['action_class'] = "Buy"
                 elif prediction < (avg_buy_price - custom_margin):
-                    chart_data['action_signal'] = "Sell"
-                    chart_data['action_class'] = "box-Sell"
+                    chart_data['action'] = "Sell"
+                    chart_data['action_class'] = "Sell"
                 else:
-                    chart_data['action_signal'] = "HOLD"
-                    chart_data['action_class'] = "box-hold"
+                    chart_data['action'] = "HOLD"
+                    chart_data['action_class'] = "hold"
         else:
-            # Fallback configuration layout if the user doesn't own shares yet
-            chart_data['action_signal'] = "NO ACTIVE POSITION HELD"
+            chart_data['action'] = "No Stocks Owned"
             chart_data['action_class'] = "box-neutral"
 
         return stock_data, chart_data, None
