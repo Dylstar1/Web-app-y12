@@ -24,7 +24,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-import joblib
+from Prediction import predict_stock_prices  
 
 #region init
 app = Flask(__name__)
@@ -176,6 +176,110 @@ def get_stock_info(ticker: str):
         print(f"Error fetching {ticker}: {e}")
         return None, None, f"Failed to fetch data for {ticker}. Please try again."
 
+def predictiondata(ticker: str):
+    if not ticker or len(ticker.strip()) < 1:  
+        return None, None, "Please enter a valid ticker symbol"
+    
+    ticker = ticker.upper().strip()  
+
+    try:
+        stock = yf.Ticker(ticker)
+        info = stock.info
+
+        current_price = None  
+        for key in ['currentPrice', 'regularMarketPrice', 'price']:
+            if info.get(key):
+                current_price = info.get(key)
+                break
+
+        growth_5y = 0.0
+        try:
+            growth_df = stock.growth_estimates
+            if isinstance(growth_df, pd.DataFrame) and not growth_df.empty:
+                if '+5y' in growth_df.index and 'stock' in growth_df.columns:
+                    growth_5y = float(growth_df.loc['+5y', 'stock'])
+        except Exception:
+            pass
+
+        recent_dividend = 0.0
+        try:
+            dividends = stock.dividends
+            if not dividends.empty:
+                recent_dividend = float(dividends.iloc[-1])
+        except Exception:
+            pass
+
+        hist = stock.history(period="3mo")
+        if hist.empty:
+            return None, None, f"No market data available for {ticker}."
+
+        stock_data = {
+            'ticker': ticker,
+            'name': info.get('longName') or info.get('shortName') or f"{ticker} Stock",
+            'current_price': round(current_price, 2) if current_price else round(float(hist['Close'].iloc[-1]), 2),
+            'previous_close': round(info.get('regularMarketPreviousClose', 0), 2),
+            'summary': info.get('longBusinessSummary', ''),
+            'currency': info.get('currency', 'USD'),
+            'last_updated': datetime.now().strftime("%Y-%m-%d %H:%M"),
+            'recent_dividend': recent_dividend,
+            'dividend_yield_pct': round(info.get('dividendYield', 0) * 100, 2) if info.get('dividendYield') else 0.0
+        }
+
+        hist_dates = hist.index.strftime('%Y-%m-%d').tolist()
+        close_prices = hist['Close'].tolist()
+        volumes = hist['Volume'].tolist()
+
+        pred_dates, pred_prices = predict_stock_prices(
+            hist_dates=hist_dates,
+            close_prices=close_prices,
+            volumes=volumes,
+            expected_growth_5y=growth_5y
+        )
+
+        chart_data = {
+            'dates': hist_dates,
+            'close': [round(p, 2) for p in close_prices],
+            'pred_dates': pred_dates,
+            'pred_prices': pred_prices,
+            'action': "HOLD",   
+        }
+
+        clean_ticker = ticker.strip().upper()
+
+        try:
+            with get_db_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT average_buy_price FROM Portfolio WHERE user_id = ? AND ticker = ?",
+                    (current_user.id, clean_ticker)
+                )
+                holding_row = cursor.fetchone()
+
+            if holding_row:
+                avg_buy_price = float(holding_row['average_buy_price'])
+                
+                if pred_prices and len(pred_prices) > 0 and avg_buy_price > 0:
+                    prediction = pred_prices[-1]       
+                    
+                    if prediction < avg_buy_price - (avg_buy_price * 0.25):
+                        chart_data['action'] = "Buy"
+                    elif prediction > avg_buy_price + (avg_buy_price * 0.25):
+                        chart_data['action'] = "Sell"
+                    else:
+                        chart_data['action'] = "HOLD"
+            else:
+                chart_data['action'] = "No Stocks Owned"
+
+        except Exception as e:
+            print(f"Database lookup or internal signal math logic failed: {e}")
+            chart_data['action'] = "ERROR"
+        
+        return stock_data, chart_data, None
+
+    except Exception as e:
+        print(f"Error fetching {ticker}: {e}")
+        return None, None, f"Failed to fetch data for {ticker}. Please try again."
+    
 @app.route('/')
 @login_required
 def index():
@@ -297,7 +401,7 @@ def buy_stock():
         flash('An error occurred while processing your purchase.', 'error')
         print(f"Buy error: {e}")
         return redirect(url_for('quote_stock'))
-    
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -471,26 +575,24 @@ def logoff():
     return redirect(url_for('login'))
     # add a link to base.html to run this route -- in the navbar
 
-#@app.route('/quote_stock', methods=['GET', 'POST'])  
-#@login_required
-#def predict():
-
 @app.route('/quote_stock', methods=['GET', 'POST'])  
 @login_required
 def quote_stock():
     form = QuoteForm()
-    
     stock_data = None
     chart_data = None
     error = None
-    tickerName = None
+    tickerName = request.args.get('ticker') 
+
+    if tickerName:
+        tickerName = tickerName.upper().strip()
+        form.tickerName.data = tickerName
+        stock_data, chart_data, error = predictiondata(tickerName)
 
     if form.validate_on_submit(): 
-        tickerName = request.form.get('tickerName', '').strip()
-
+        tickerName = form.tickerName.data.strip().upper()
         if tickerName:
-            stock_data, chart_data, error = get_stock_info(tickerName) 
-            print(chart_data)
+            stock_data, chart_data, error = predictiondata(tickerName)
         else:
             error = "Please enter a stock ticker symbol (e.g. BHP.AX)"
 

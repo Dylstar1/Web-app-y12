@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-
+    
     <form method="POST" action="{{ url_for('quote_stock') }}">
         {{ form.csrf_token }}
 
@@ -15,20 +15,48 @@
         <p>{{ form.submit }}</p>
 
     </form>
-    <div class="stockinfo">
-        {% if stock_data %}
-            {{ stock_data.name }}
-            <strong>Current price:</strong> ${{ stock_data.current_price }}
+
+    {% if stock_data %}
+    <form method="post" action="{{ url_for('buy_stock') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="ticker" value="{{ stock_data.ticker }}">
+        <label class="form-label">Number of Shares</label>
+        <input type="number"
+            name="shares"
+            class="form-control"
+            min="1"
+            value="10"
+            required>
+        <label class ="form-label">Price per Share</label>
+        <input type="text"
+            class="form-control"
+            value="${{ stock_data.current_price }}"
+            readonly>
+            <button type="submit" class="btn-primary btn-1g w-100">
+                Buy Shares
+            </button>
+        </form>
+    {% endif %}
+
+    {% if stock_data %}
+        <div class="stockinfo">
+            <h2>{{ stock_data.name }}</h2>
+            <h3 class="buystock"><strong>Current price:</strong> ${{ stock_data.current_price }}
             <strong>Previous Close:</strong> $ {{ stock_data.previous_close }}
-            <strong>Last Updated:</strong> {{ stock_data.last_updated}}
+            <strong>Last Updated:</strong> {{ stock_data.last_updated}}</h3>
     
             {% if stock_data.summary %}
                 <br>
                 <p><strong>About the company:</strong><br>
                     {{ stock_data.summary[:650] }}...</p>
             {% endif %}
-        {% endif%}
-    </div>
+            {% if chart_data and chart_data.action %}
+                <H2 class="reco">BUY/SELL/HOLD Reconmendation: <strong>{{ chart_data.action }}</strong></h2>
+            {% endif %}
+        </div>
+    {% endif%}
+
+
     {% if chart_data %}
     <div id="priceChart" style="width:100%; height:400px;"></div>
     <script>
@@ -53,26 +81,57 @@
     </script>
     {% endif %}
 
-    {% if stock_data %}
-    <form method="post" action="{{ url_for('buy_stock') }}">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <input type="hidden" name="ticker" value="{{ stock_data.ticker }}">
-        <label class="form-label">Number of Shares</label>
-        <input type="number"
-            name="shares"
-            class="form-control"
-            min="1"
-            value="10"
-            required>
-        <label class ="form-label">Price per Share</label>
-        <input type="text"
-            class="form-control"
-            value="${{ stock_data.current_price }}"
-            readonly>
-            <button type="submit" class="btn-primary btn-1g w-100">
-                Buy Shares
-            </button>
-        </form>
+    <p></p>
+
+    {% if chart_data %}
+        <div id="predictionModelChart" style="width:100%; height:450px;"></div>
+
+    <script>
+        var datesHistorical = {{ chart_data.dates | tojson }};
+        var pricesHistorical = {{ chart_data.close | tojson }};
+        var datesPredicted = {{ chart_data.pred_dates | tojson }};
+        var pricesPredicted = {{ chart_data.pred_prices | tojson }};
+
+        var historicalTrace = {
+            x: datesHistorical,
+            y: pricesHistorical,
+            mode: 'lines',
+            name: 'Stock Hisory',
+            line: { color: '#348ABD', width: 3 }
+        };
+
+        var finalHistDate = datesHistorical[datesHistorical.length - 1];
+        var finalHistPrice = pricesHistorical[pricesHistorical.length - 1];
+
+        var predictionTrace = {
+            x: [finalHistDate].concat(datesPredicted),
+            y: [finalHistPrice].concat(pricesPredicted),
+            mode: 'lines+markers',
+            name: 'Predicted Data',
+            line: { color: '#E24A33', width: 3, dash: 'dashdot' },
+            marker: { size: 6, symbol: 'square', color: '#E24A33' }
+        };
+
+        var layoutSettings = {
+            title: '{{ stock_data.ticker }} Predicted Prices',
+            xaxis: { 
+                title: 'Date',
+                type: 'date',          
+                tickformat: '%b %d',    
+                nticks: 8,              
+                tickangle: -45          
+            },
+            yaxis: { 
+                title: 'Price ({{ stock_data.currency }})' 
+            },
+            hovermode: 'x unified',
+            template: 'ggplot',         
+            legend: { orientation: 'h', y: -0.2 }
+        };
+
+        var finalPlotData = [historicalTrace, predictionTrace];
+        Plotly.newPlot('predictionModelChart', finalPlotData, layoutSettings);
+    </script>
     {% endif %}
 
 {% endblock %}

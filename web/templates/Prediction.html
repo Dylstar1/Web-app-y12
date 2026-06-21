@@ -1,0 +1,76 @@
+{% extends 'base.html' %}   
+{% block title %}Prediction - Smart Signal{% endblock %}
+{% block heading %}Predict Stock Data{% endblock %}
+
+{% block extra_head %}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <form method="POST" action="{{ url_for('Prediction') }}">
+        {{ form.csrf_token }}
+
+        <p>Stock Ticker {{ form.tickerName() }}</p>
+        <p>{{ form.submit }}</p>
+
+    </form>
+
+    {% if stock_data %}
+        <div class="StockPredict">
+            <h2>{{ stock_data.name }} ({{ stock_data.ticker }})</h2>
+        </div>
+    {% endif %}
+
+    {% if chart_data %}
+        <div id="predictionModelChart" style="width:100%; height:450px;"></div>
+
+    <script>
+        var datesHistorical = {{ chart_data.dates | tojson }};
+        var pricesHistorical = {{ chart_data.close | tojson }};
+        var datesPredicted = {{ chart_data.pred_dates | tojson }};
+        var pricesPredicted = {{ chart_data.pred_prices | tojson }};
+
+        var historicalTrace = {
+            x: datesHistorical,
+            y: pricesHistorical,
+            mode: 'lines',
+            name: 'Stock Hisory',
+            line: { color: '#348ABD', width: 3 }
+        };
+
+        var finalHistDate = datesHistorical[datesHistorical.length - 1];
+        var finalHistPrice = pricesHistorical[pricesHistorical.length - 1];
+
+        var predictionTrace = {
+            x: [finalHistDate].concat(datesPredicted),
+            y: [finalHistPrice].concat(pricesPredicted),
+            mode: 'lines+markers',
+            name: 'Predicted Data',
+            line: { color: '#E24A33', width: 3, dash: 'dashdot' },
+            marker: { size: 6, symbol: 'square', color: '#E24A33' }
+        };
+
+        var layoutSettings = {
+            title: '{{ stock_data.ticker }} Predicted Prices',
+            xaxis: { 
+                title: 'Date',
+                type: 'date',          
+                tickformat: '%b %d',    
+                nticks: 8,              
+                tickangle: -45          
+            },
+            yaxis: { 
+                title: 'Price ({{ stock_data.currency }})' 
+            },
+            hovermode: 'x unified',
+            template: 'ggplot',         
+            legend: { orientation: 'h', y: -0.2 }
+        };
+
+        var finalPlotData = [historicalTrace, predictionTrace];
+        Plotly.newPlot('predictionModelChart', finalPlotData, layoutSettings);
+    </script>
+    {% endif %}
+
+{% endblock %}
+
