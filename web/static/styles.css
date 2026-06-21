@@ -229,9 +229,9 @@ table th {
 }
 
 .btn {
-    background-color: #f21b1b;   /* strong red */
-    color: #000;                 /* black text */
-    border: 1px solid #000;      /* thin black border */
+    background-color: #f21b1b;  
+    color: #000;                
+    border: 1px solid #000;    
     padding: 3px 10px;
     border-radius: 5px;
     font-weight: 550;
@@ -243,11 +243,11 @@ table th {
 }
 
 .btn-red:hover {
-    background-color: #cc0000;   /* slightly darker red */
+    background-color: #cc0000;   
 }
 
 button.buy {
-    background-color: #3ce73c;   /* green */
+    background-color: #3ce73c;   
     color: rgb(0, 0, 0);
     border: 1px solid #000000;
     padding: 5px 12px;
@@ -257,7 +257,7 @@ button.buy {
 }
 
 button.buy:hover {
-    background-color: #39e639;   /* darker green */
+    background-color: #39e639;  
 }
 
 .portfolio-grid {
@@ -366,4 +366,14 @@ button.buy:hover {
 
 .buystock {
     margin-bottom: -20px;
+}
+
+.button {
+    background-color: #07d2ed; 
+    color: rgb(0, 0, 0);
+    border: 1px solid #000000;
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
 }
