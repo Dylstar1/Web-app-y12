@@ -262,12 +262,11 @@ def predictiondata(ticker: str):
             
             if pred_prices and len(pred_prices) > 0 and avg_buy_price > 0:
                 prediction = pred_prices[-1]       
-                custom_margin = avg_buy_price * 0.25  
                 
-                if prediction > (avg_buy_price + custom_margin):
+                if prediction < avg_buy_price - (avg_buy_price * 0.25):
                     chart_data['action'] = "Buy"
                     chart_data['action_class'] = "Buy"
-                elif prediction < (avg_buy_price - custom_margin):
+                elif prediction > avg_buy_price + (avg_buy_price * 0.25):
                     chart_data['action'] = "Sell"
                     chart_data['action_class'] = "Sell"
                 else:
