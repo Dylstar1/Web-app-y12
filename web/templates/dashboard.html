@@ -134,7 +134,7 @@
                 {% endfor %}
             </tbody>
         </table>
-
+    <h3 class="buylink">Stock Info: <a href="{{ url_for('quote_stock') }}">Buy Stock</a></h3>
     {% else %}
         You don't own any stocks yet.
         <a href="{{ url_for('quote_stock') }}">Search for stocks to buy →</a>
